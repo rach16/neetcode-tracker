@@ -124,6 +124,22 @@ npm run preview
 5. **Track Progress**: Monitor your progress on the dashboard
 6. **Maintain Streaks**: Solve at least one problem daily to keep your streak alive!
 
+### 📱 **Mobile Installation**
+
+**On iOS (iPhone/iPad):**
+1. Open the app in Safari browser
+2. Tap the Share button (square with arrow)
+3. Scroll down and tap "Add to Home Screen"
+4. Tap "Add" in the top right
+
+**On Android:**
+1. Open the app in Chrome browser
+2. Tap the menu (three dots)
+3. Select "Install app" or "Add to Home Screen"
+4. Tap "Install"
+
+Once installed, the app works offline and feels like a native mobile app!
+
 ---
 
 ## 📁 Project Structure
