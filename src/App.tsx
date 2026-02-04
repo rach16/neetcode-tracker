@@ -8,7 +8,6 @@ import { AlgoTips } from './components/AlgoTips';
 import { CheatSheet } from './components/CheatSheet';
 import { Settings } from './components/Settings';
 import { BottomNav, Sidebar } from './components/Navigation';
-import { InstallPrompt } from './components/common';
 import { useStreak } from './hooks/useStreak';
 import { View, Status } from './types';
 
@@ -168,9 +167,6 @@ const App: React.FC = () => {
 
       {/* Mobile Bottom Navigation */}
       <BottomNav currentView={currentView} onNavigate={handleNavigate} />
-      
-      {/* PWA Install Prompt */}
-      <InstallPrompt />
     </div>
   );
 };

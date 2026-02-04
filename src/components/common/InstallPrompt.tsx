@@ -12,24 +12,32 @@ export const InstallPrompt = () => {
 
   useEffect(() => {
     const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
-      // Don't show if already dismissed or installed
-      const dismissed = localStorage.getItem('pwa-install-dismissed');
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-      
-      if (!dismissed && !isStandalone) {
-        // Show after 30 seconds to not be intrusive
-        setTimeout(() => setShowPrompt(true), 30000);
+      try {
+        e.preventDefault();
+        setDeferredPrompt(e as BeforeInstallPromptEvent);
+        
+        // Don't show if already dismissed or installed
+        const dismissed = localStorage.getItem('pwa-install-dismissed');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        
+        if (!dismissed && !isStandalone) {
+          // Show after 30 seconds to not be intrusive
+          setTimeout(() => setShowPrompt(true), 30000);
+        }
+      } catch (error) {
+        console.error('Install prompt error:', error);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handler);
 
     // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setShowPrompt(false);
+    try {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        setShowPrompt(false);
+      }
+    } catch (error) {
+      console.error('Display mode check error:', error);
     }
 
     return () => window.removeEventListener('beforeinstallprompt', handler);
