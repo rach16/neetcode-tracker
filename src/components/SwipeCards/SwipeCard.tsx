@@ -229,17 +229,17 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         </div>
       </div>
 
-      {/* Desktop buttons */}
-      <div className="flex gap-4 mt-6 md:flex hidden">
+      {/* Action buttons - visible on all screens */}
+      <div className="flex gap-4 mt-6">
         <button
           onClick={() => handleButtonSwipe('left')}
-          className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-semibold transition-colors"
+          className="flex-1 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-white py-3 rounded-xl font-semibold transition-colors touch-target"
         >
           👈 Need Review
         </button>
         <button
           onClick={() => handleButtonSwipe('right')}
-          className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-semibold transition-colors"
+          className="flex-1 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white py-3 rounded-xl font-semibold transition-colors touch-target"
         >
           Got It! 👍
         </button>
