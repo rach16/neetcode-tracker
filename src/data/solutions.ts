@@ -29,13 +29,14 @@ export const problemSolutions: Record<string, {
     pattern: 'HashSet',
     timeComplexity: 'O(n)',
     spaceComplexity: 'O(n)',
-    pythonSolution: `def containsDuplicate(nums):
-    seen = set()
-    for num in nums:
-        if num in seen:
-            return True
-        seen.add(num)
-    return False`,
+    pythonSolution: `class Solution:
+    def hasDuplicate(self, nums: List[int]) -> bool:
+        seen = set()
+        for num in nums:
+            if num in seen:
+                return True
+            seen.add(num)
+        return False`,
     neetcodeUrl: 'https://neetcode.io/problems/duplicate-integer'
   },
 
