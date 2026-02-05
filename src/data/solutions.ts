@@ -1209,4 +1209,527 @@ def decode(s):
             matrix[0][c] = 0`,
     neetcodeUrl: 'https://neetcode.io/problems/set-matrix-zeroes'
   },
+
+  // Additional Sliding Window
+  'longest-repeating-character-replacement': {
+    approach: 'Sliding window: track max frequency char. If window size - max_freq > k, shrink window.',
+    pattern: 'Sliding Window',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(26) = O(1)',
+    pythonSolution: `def characterReplacement(s, k):
+    count = {}
+    res = 0
+    l = 0
+    max_freq = 0
+    
+    for r in range(len(s)):
+        count[s[r]] = count.get(s[r], 0) + 1
+        max_freq = max(max_freq, count[s[r]])
+        
+        while (r - l + 1) - max_freq > k:
+            count[s[l]] -= 1
+            l += 1
+        
+        res = max(res, r - l + 1)
+    
+    return res`,
+    neetcodeUrl: 'https://neetcode.io/problems/longest-repeating-substring-with-replacement'
+  },
+
+  'minimum-window-substring': {
+    approach: 'Sliding window: expand until valid, then shrink to find minimum. Track char frequencies.',
+    pattern: 'Sliding Window',
+    timeComplexity: 'O(m + n)',
+    spaceComplexity: 'O(m + n)',
+    pythonSolution: `from collections import Counter
+
+def minWindow(s, t):
+    if not t or not s:
+        return ""
+    
+    dict_t = Counter(t)
+    required = len(dict_t)
+    l, r = 0, 0
+    formed = 0
+    window_counts = {}
+    ans = (float('inf'), None, None)
+    
+    while r < len(s):
+        char = s[r]
+        window_counts[char] = window_counts.get(char, 0) + 1
+        
+        if char in dict_t and window_counts[char] == dict_t[char]:
+            formed += 1
+        
+        while l <= r and formed == required:
+            if r - l + 1 < ans[0]:
+                ans = (r - l + 1, l, r)
+            
+            char = s[l]
+            window_counts[char] -= 1
+            if char in dict_t and window_counts[char] < dict_t[char]:
+                formed -= 1
+            l += 1
+        
+        r += 1
+    
+    return "" if ans[0] == float('inf') else s[ans[1]:ans[2] + 1]`,
+    neetcodeUrl: 'https://neetcode.io/problems/minimum-window-with-characters'
+  },
+
+  // Additional Stack Problems
+  'daily-temperatures': {
+    approach: 'Monotonic stack: store indices. Pop when current temp > stack top, calculate days.',
+    pattern: 'Monotonic Stack',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def dailyTemperatures(temperatures):
+    result = [0] * len(temperatures)
+    stack = []
+    
+    for i, temp in enumerate(temperatures):
+        while stack and temperatures[stack[-1]] < temp:
+            idx = stack.pop()
+            result[idx] = i - idx
+        stack.append(i)
+    
+    return result`,
+    neetcodeUrl: 'https://neetcode.io/problems/daily-temperatures'
+  },
+
+  'generate-parentheses': {
+    approach: 'Backtracking: add "(" if open < n, add ")" if close < open. Build valid combinations.',
+    pattern: 'Backtracking',
+    timeComplexity: 'O(4^n / √n) - Catalan number',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def generateParenthesis(n):
+    result = []
+    
+    def backtrack(curr, open_count, close_count):
+        if len(curr) == 2 * n:
+            result.append(curr)
+            return
+        
+        if open_count < n:
+            backtrack(curr + '(', open_count + 1, close_count)
+        
+        if close_count < open_count:
+            backtrack(curr + ')', open_count, close_count + 1)
+    
+    backtrack('', 0, 0)
+    return result`,
+    neetcodeUrl: 'https://neetcode.io/problems/generate-parentheses'
+  },
+
+  'largest-rectangle-in-histogram': {
+    approach: 'Monotonic stack: for each bar, calculate max area using heights from stack.',
+    pattern: 'Monotonic Stack',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def largestRectangleArea(heights):
+    stack = []
+    max_area = 0
+    
+    for i, h in enumerate(heights):
+        start = i
+        while stack and stack[-1][1] > h:
+            idx, height = stack.pop()
+            max_area = max(max_area, height * (i - idx))
+            start = idx
+        stack.append((start, h))
+    
+    for i, h in stack:
+        max_area = max(max_area, h * (len(heights) - i))
+    
+    return max_area`,
+    neetcodeUrl: 'https://neetcode.io/problems/largest-rectangle-in-histogram'
+  },
+
+  // Additional Linked List
+  'add-two-numbers': {
+    approach: 'Simulate addition with carry. Create new nodes for each digit sum.',
+    pattern: 'Linked List',
+    timeComplexity: 'O(max(m, n))',
+    spaceComplexity: 'O(max(m, n))',
+    pythonSolution: `def addTwoNumbers(l1, l2):
+    dummy = ListNode()
+    curr = dummy
+    carry = 0
+    
+    while l1 or l2 or carry:
+        v1 = l1.val if l1 else 0
+        v2 = l2.val if l2 else 0
+        
+        total = v1 + v2 + carry
+        carry = total // 10
+        curr.next = ListNode(total % 10)
+        
+        curr = curr.next
+        l1 = l1.next if l1 else None
+        l2 = l2.next if l2 else None
+    
+    return dummy.next`,
+    neetcodeUrl: 'https://neetcode.io/problems/add-two-numbers'
+  },
+
+  'lru-cache': {
+    approach: 'HashMap + Doubly Linked List. HashMap for O(1) access, list for LRU ordering.',
+    pattern: 'Linked List + HashMap',
+    timeComplexity: 'O(1) all operations',
+    spaceComplexity: 'O(capacity)',
+    pythonSolution: `class LRUCache:
+    def __init__(self, capacity):
+        self.cap = capacity
+        self.cache = {}
+        self.left, self.right = Node(0, 0), Node(0, 0)
+        self.left.next, self.right.prev = self.right, self.left
+    
+    def remove(self, node):
+        prev, nxt = node.prev, node.next
+        prev.next, nxt.prev = nxt, prev
+    
+    def insert(self, node):
+        prev, nxt = self.right.prev, self.right
+        prev.next = nxt.prev = node
+        node.next, node.prev = nxt, prev
+    
+    def get(self, key):
+        if key in self.cache:
+            self.remove(self.cache[key])
+            self.insert(self.cache[key])
+            return self.cache[key].val
+        return -1
+    
+    def put(self, key, value):
+        if key in self.cache:
+            self.remove(self.cache[key])
+        self.cache[key] = Node(key, value)
+        self.insert(self.cache[key])
+        
+        if len(self.cache) > self.cap:
+            lru = self.left.next
+            self.remove(lru)
+            del self.cache[lru.key]`,
+    neetcodeUrl: 'https://neetcode.io/problems/lru-cache'
+  },
+
+  // Additional Tree Problems
+  'balanced-binary-tree': {
+    approach: 'DFS: check height difference <= 1 for each subtree. Return height and balance status.',
+    pattern: 'Tree DFS',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(h)',
+    pythonSolution: `def isBalanced(root):
+    def dfs(node):
+        if not node:
+            return [True, 0]
+        
+        left, right = dfs(node.left), dfs(node.right)
+        balanced = (left[0] and right[0] and
+                   abs(left[1] - right[1]) <= 1)
+        
+        return [balanced, 1 + max(left[1], right[1])]
+    
+    return dfs(root)[0]`,
+    neetcodeUrl: 'https://neetcode.io/problems/balanced-binary-tree'
+  },
+
+  'diameter-of-binary-tree': {
+    approach: 'DFS: at each node, diameter = left_height + right_height. Track global max.',
+    pattern: 'Tree DFS',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(h)',
+    pythonSolution: `def diameterOfBinaryTree(root):
+    diameter = [0]
+    
+    def dfs(node):
+        if not node:
+            return 0
+        
+        left = dfs(node.left)
+        right = dfs(node.right)
+        diameter[0] = max(diameter[0], left + right)
+        
+        return 1 + max(left, right)
+    
+    dfs(root)
+    return diameter[0]`,
+    neetcodeUrl: 'https://neetcode.io/problems/binary-tree-diameter'
+  },
+
+  'binary-tree-right-side-view': {
+    approach: 'BFS level order. Record last node of each level.',
+    pattern: 'Tree BFS',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `from collections import deque
+
+def rightSideView(root):
+    if not root:
+        return []
+    
+    result = []
+    queue = deque([root])
+    
+    while queue:
+        level_length = len(queue)
+        for i in range(level_length):
+            node = queue.popleft()
+            if i == level_length - 1:
+                result.append(node.val)
+            
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    
+    return result`,
+    neetcodeUrl: 'https://neetcode.io/problems/binary-tree-right-side-view'
+  },
+
+  'count-good-nodes-in-binary-tree': {
+    approach: 'DFS: track max value on path. Count nodes >= max.',
+    pattern: 'Tree DFS',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(h)',
+    pythonSolution: `def goodNodes(root):
+    def dfs(node, max_val):
+        if not node:
+            return 0
+        
+        count = 1 if node.val >= max_val else 0
+        max_val = max(max_val, node.val)
+        
+        count += dfs(node.left, max_val)
+        count += dfs(node.right, max_val)
+        
+        return count
+    
+    return dfs(root, root.val)`,
+    neetcodeUrl: 'https://neetcode.io/problems/count-good-nodes-in-binary-tree'
+  },
+
+  // Additional Heap Problems
+  'kth-largest-element-in-array': {
+    approach: 'Min heap of size k. Maintain k largest elements, root is kth largest.',
+    pattern: 'Heap',
+    timeComplexity: 'O(n log k)',
+    spaceComplexity: 'O(k)',
+    pythonSolution: `import heapq
+
+def findKthLargest(nums, k):
+    heap = nums[:k]
+    heapq.heapify(heap)
+    
+    for num in nums[k:]:
+        if num > heap[0]:
+            heapq.heapreplace(heap, num)
+    
+    return heap[0]`,
+    neetcodeUrl: 'https://neetcode.io/problems/kth-largest-integer-in-a-stream'
+  },
+
+  // Additional DP Problems
+  'word-break': {
+    approach: 'DP: dp[i] = can break s[0:i]. Check all possible last words.',
+    pattern: '1D DP',
+    timeComplexity: 'O(n² * m) where m is dict size',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def wordBreak(s, wordDict):
+    dp = [False] * (len(s) + 1)
+    dp[len(s)] = True
+    
+    for i in range(len(s) - 1, -1, -1):
+        for word in wordDict:
+            if i + len(word) <= len(s) and s[i:i+len(word)] == word:
+                dp[i] = dp[i + len(word)]
+            if dp[i]:
+                break
+    
+    return dp[0]`,
+    neetcodeUrl: 'https://neetcode.io/problems/word-break'
+  },
+
+  'unique-paths': {
+    approach: 'DP: dp[i][j] = dp[i-1][j] + dp[i][j-1]. Count paths to reach each cell.',
+    pattern: '2D DP',
+    timeComplexity: 'O(m * n)',
+    spaceComplexity: 'O(n) with space optimization',
+    pythonSolution: `def uniquePaths(m, n):
+    row = [1] * n
+    
+    for i in range(m - 1):
+        new_row = [1] * n
+        for j in range(n - 2, -1, -1):
+            new_row[j] = new_row[j + 1] + row[j]
+        row = new_row
+    
+    return row[0]`,
+    neetcodeUrl: 'https://neetcode.io/problems/count-paths'
+  },
+
+  'jump-game': {
+    approach: 'Greedy: track farthest reachable index. If current > farthest, unreachable.',
+    pattern: 'Greedy',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def canJump(nums):
+    goal = len(nums) - 1
+    
+    for i in range(len(nums) - 2, -1, -1):
+        if i + nums[i] >= goal:
+            goal = i
+    
+    return goal == 0`,
+    neetcodeUrl: 'https://neetcode.io/problems/jump-game'
+  },
+
+  'meeting-rooms': {
+    approach: 'Sort by start time. Check if any meeting overlaps with previous.',
+    pattern: 'Intervals',
+    timeComplexity: 'O(n log n)',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def canAttendMeetings(intervals):
+    intervals.sort(key=lambda x: x[0])
+    
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < intervals[i-1][1]:
+            return False
+    
+    return True`,
+    neetcodeUrl: 'https://neetcode.io/problems/meeting-schedule'
+  },
+
+  'merge-intervals': {
+    approach: 'Sort by start. Merge if current start <= last end.',
+    pattern: 'Intervals',
+    timeComplexity: 'O(n log n)',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def merge(intervals):
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    
+    for interval in intervals[1:]:
+        if interval[0] <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], interval[1])
+        else:
+            merged.append(interval)
+    
+    return merged`,
+    neetcodeUrl: 'https://neetcode.io/problems/merge-intervals'
+  },
+
+  'insert-interval': {
+    approach: 'Add intervals before new, merge overlapping, add after.',
+    pattern: 'Intervals',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def insert(intervals, newInterval):
+    result = []
+    
+    for i, interval in enumerate(intervals):
+        if newInterval[1] < interval[0]:
+            result.append(newInterval)
+            return result + intervals[i:]
+        elif newInterval[0] > interval[1]:
+            result.append(interval)
+        else:
+            newInterval = [min(newInterval[0], interval[0]),
+                          max(newInterval[1], interval[1])]
+    
+    result.append(newInterval)
+    return result`,
+    neetcodeUrl: 'https://neetcode.io/problems/insert-new-interval'
+  },
+
+  'non-overlapping-intervals': {
+    approach: 'Sort by end time. Greedy: keep interval with earliest end, remove overlapping.',
+    pattern: 'Intervals',
+    timeComplexity: 'O(n log n)',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def eraseOverlapIntervals(intervals):
+    intervals.sort(key=lambda x: x[1])
+    count = 0
+    prev_end = intervals[0][1]
+    
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < prev_end:
+            count += 1
+        else:
+            prev_end = intervals[i][1]
+    
+    return count`,
+    neetcodeUrl: 'https://neetcode.io/problems/non-overlapping-intervals'
+  },
+
+  // Additional Bit Manipulation
+  'number-of-1-bits': {
+    approach: 'Count set bits using n & (n-1) to remove rightmost 1 bit.',
+    pattern: 'Bit Manipulation',
+    timeComplexity: 'O(1) - max 32 bits',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def hammingWeight(n):
+    count = 0
+    while n:
+        n &= n - 1
+        count += 1
+    return count`,
+    neetcodeUrl: 'https://neetcode.io/problems/number-of-one-bits'
+  },
+
+  'counting-bits': {
+    approach: 'DP: bits[i] = bits[i >> 1] + (i & 1). Use previous results.',
+    pattern: 'Bit Manipulation + DP',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(n)',
+    pythonSolution: `def countBits(n):
+    dp = [0] * (n + 1)
+    for i in range(1, n + 1):
+        dp[i] = dp[i >> 1] + (i & 1)
+    return dp`,
+    neetcodeUrl: 'https://neetcode.io/problems/counting-bits'
+  },
+
+  'reverse-bits': {
+    approach: 'Iterate 32 times, extract last bit, add to result, shift both.',
+    pattern: 'Bit Manipulation',
+    timeComplexity: 'O(1)',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def reverseBits(n):
+    result = 0
+    for i in range(32):
+        bit = (n >> i) & 1
+        result |= (bit << (31 - i))
+    return result`,
+    neetcodeUrl: 'https://neetcode.io/problems/reverse-bits'
+  },
+
+  'missing-number': {
+    approach: 'XOR all numbers and indices. Missing number remains.',
+    pattern: 'Bit Manipulation',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def missingNumber(nums):
+    result = len(nums)
+    for i, num in enumerate(nums):
+        result ^= i ^ num
+    return result`,
+    neetcodeUrl: 'https://neetcode.io/problems/missing-number'
+  },
+
+  'sum-of-two-integers': {
+    approach: 'Use XOR for sum without carry, AND + shift for carry. Repeat until no carry.',
+    pattern: 'Bit Manipulation',
+    timeComplexity: 'O(1)',
+    spaceComplexity: 'O(1)',
+    pythonSolution: `def getSum(a, b):
+    mask = 0xFFFFFFFF
+    while b != 0:
+        carry = (a & b) << 1
+        a = (a ^ b) & mask
+        b = carry & mask
+    
+    return a if a < 0x80000000 else ~(a ^ mask)`,
+    neetcodeUrl: 'https://neetcode.io/problems/sum-of-two-integers'
+  },
 };
