@@ -8,6 +8,7 @@ import { AlgoTips } from './components/AlgoTips';
 import { CheatSheet } from './components/CheatSheet';
 import { Settings } from './components/Settings';
 import { BottomNav, Sidebar } from './components/Navigation';
+import { SwipeCards } from './components/SwipeCards';
 import { useStreak } from './hooks/useStreak';
 import { View, Status } from './types';
 
@@ -124,6 +125,8 @@ const App: React.FC = () => {
             onUpdateCard={updateFlashcard}
           />
         );
+      case 'swipe-cards':
+        return <SwipeCards problems={userProgress.problems} />;
       case 'algo-tips':
         return <AlgoTips />;
       case 'cheatsheet':

@@ -33,6 +33,13 @@ export interface Problem {
   lastAttempted: string | null;
   nextReview: string | null;
   reviewCount: number;
+  // Solution data for swipe cards
+  approach?: string;
+  pattern?: string;
+  timeComplexity?: string;
+  spaceComplexity?: string;
+  pythonSolution?: string;
+  neetcodeUrl?: string;
 }
 
 export interface Streak {
@@ -78,7 +85,7 @@ export const CATEGORY_INFO: CategoryInfo[] = [
   { id: 'bit-manipulation', name: 'Bit Manipulation', problemCount: 7 },
 ];
 
-export type View = 'dashboard' | 'problems' | 'flashcards' | 'algo-tips' | 'cheatsheet' | 'settings' | 'problem-detail' | 'flashcard-review' | 'flashcard-quiz';
+export type View = 'dashboard' | 'problems' | 'flashcards' | 'algo-tips' | 'cheatsheet' | 'settings' | 'problem-detail' | 'flashcard-review' | 'flashcard-quiz' | 'swipe-cards';
 
 // Algorithm Tips Types
 export type Pattern =

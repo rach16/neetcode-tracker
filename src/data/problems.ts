@@ -1,4 +1,5 @@
 import { Problem } from '../types';
+import { problemSolutions } from './solutions';
 
 export const initialProblems: Omit<Problem, 'status' | 'notes' | 'lastAttempted' | 'nextReview' | 'reviewCount'>[] = [
   // Arrays & Hashing
@@ -189,12 +190,24 @@ export const initialProblems: Omit<Problem, 'status' | 'notes' | 'lastAttempted'
 ];
 
 export const createInitialProblems = (): Problem[] => {
-  return initialProblems.map((problem) => ({
-    ...problem,
-    status: 'not_started' as const,
-    notes: '',
-    lastAttempted: null,
-    nextReview: null,
-    reviewCount: 0,
-  }));
+  return initialProblems.map((problem) => {
+    const solution = problemSolutions[problem.id];
+    return {
+      ...problem,
+      status: 'not_started' as const,
+      notes: '',
+      lastAttempted: null,
+      nextReview: null,
+      reviewCount: 0,
+      // Add solution data if available
+      ...(solution && {
+        approach: solution.approach,
+        pattern: solution.pattern,
+        timeComplexity: solution.timeComplexity,
+        spaceComplexity: solution.spaceComplexity,
+        pythonSolution: solution.pythonSolution,
+        neetcodeUrl: solution.neetcodeUrl,
+      }),
+    };
+  });
 };
